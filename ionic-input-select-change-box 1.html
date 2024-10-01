@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ionic-input-select-change-check</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+</head>
+<body>
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Meal Cost Calculator</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <ion-item>
+      <ion-label position="floating">Customer's Name</ion-label>
+      <ion-input id="customerName" type="text" placeholder="Enter customer's name"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Number of Servings</ion-label>
+      <ion-input id="servings" type="number" placeholder="Enter number of servings"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Meal</ion-label>
+      <ion-select id="mealType" placeholder="Select a meal" (ionChange)="showCustomInput()">
+        <ion-select-option value="Pizza">Pizza</ion-select-option>
+        <ion-select-option value="Burger">Burger</ion-select-option>
+        <ion-select-option value="Pasta">Pasta</ion-select-option>
+        <ion-select-option value="Others">Others</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div id="customMealsContainer" style="display:none;">
+      <ion-item>
+        <ion-label position="floating">Meal Name</ion-label>
+        <ion-input id="mealName" type="text" placeholder="Enter meal name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Meal Price</ion-label>
+        <ion-input id="mealPrice" type="number" placeholder="Enter meal price"></ion-input>
+      </ion-item>
+    </div>
+
+    <ion-item>
+      <ion-label>Add Extra Cheese (PHP 20)</ion-label>
+      <ion-checkbox id="extraCheese"></ion-checkbox>
+    </ion-item>
+
+    <ion-button expand="block" onclick="calculateMealCost()">Calculate Total</ion-button>
+
+    <ion-card id="resultCard" style="display:none;">
+      <ion-card-header>
+        <ion-card-title>Result Summary</ion-card-title>
+      </ion-card-header>
+      <ion-card-content id="resultContent"></ion-card-content>
+    </ion-card>
+  </ion-content>
+
+  <script>
+    document.getElementById("mealType").addEventListener("ionChange", showCustomInput);
+
+    function showCustomInput() {
+      const mealType = document.getElementById("mealType").value;
+      const customMealsContainer = document.getElementById("customMealsContainer");
+      customMealsContainer.style.display = (mealType === "Others") ? "block" : "none";
+    }
+
+    function calculateMealCost() {
+      const customerName = document.getElementById('customerName').value;
+      const servings = parseInt(document.getElementById('servings').value) || 0;
+      const mealType = document.getElementById('mealType').value;
+      let mealPrice = 0;
+
+      if (mealType === "Pizza") {
+        mealPrice = 200; 
+      } else if (mealType === "Burger") {
+        mealPrice = 150; 
+      } else if (mealType === "Pasta") {
+        mealPrice = 180;
+      } else if (mealType === "Others") {
+        mealPrice = parseFloat(document.getElementById("mealPrice").value) || 0;
+      }
+
+      const hasExtraCheese = document.getElementById('extraCheese').checked;
+      if (hasExtraCheese) {
+        mealPrice += 20; 
+      }
+
+      const totalCost = mealPrice * servings;
+
+      const resultCard = document.getElementById('resultCard');
+      const resultContent = document.getElementById('resultContent');
+
+      resultContent.innerHTML = `
+        <b>Customer's Name:</b> ${customerName}<br>
+        <b>Meal Type:</b> ${mealType}<br>
+        <b>Number of Servings:</b> ${servings}<br>
+        <b>Total Price:</b> PHP ${totalCost.toFixed(2)} (including extra cheese if selected)
+      `;
+      resultCard.style.display = "block"; 
+    }
+  </script>
+
+</body>
+</html>

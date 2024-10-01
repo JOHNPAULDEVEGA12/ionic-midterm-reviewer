@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Price Calculator</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@latest/dist/ionic/ionic.esm.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@latest/css/ionic.bundle.css"/>
+</head>
+<body>
+
+  <ion-app>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Price Calculator</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-label position="floating">Item Name</ion-label>
+        <ion-input id="itemName" type="text" placeholder="Enter the item name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Item Type</ion-label>
+        <ion-select id="itemType" placeholder="Select Item Type" (ionChange)="onItemTypeChange()">
+          <ion-select-option value="Electronics">Electronics</ion-select-option>
+          <ion-select-option value="Clothing">Clothing</ion-select-option>
+          <ion-select-option value="Food">Food</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item id="priceItem" style="display:none;">
+        <ion-label position="floating">Price</ion-label>
+        <ion-input id="itemPrice" type="number" placeholder="Enter the price"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Include Warranty</ion-label>
+        <ion-checkbox id="warranty"></ion-checkbox>
+      </ion-item>
+
+      <ion-button expand="block" onclick="computeTotal()">Compute Total</ion-button>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Result</ion-card-title>
+        </ion-card-header>
+        <ion-card-content id="result"></ion-card-content>
+      </ion-card>
+
+    </ion-content>
+  </ion-app>
+
+  <script>
+    document.getElementById("itemType").addEventListener("ionChange", onItemTypeChange)
+
+    function onItemTypeChange() {
+      let itemType = document.getElementById("itemType").value;
+      let priceItem = document.getElementById("priceItem");
+      priceItem.style.display = itemType ? "block" : "none";
+    }
+
+    function computeTotal() {
+      let itemName = document.getElementById('itemName').value;
+      let itemType = document.getElementById('itemType').value;
+      let itemPrice = parseFloat(document.getElementById('itemPrice').value || 0);
+      let hasWarranty = document.getElementById('warranty').checked;
+      let resultArea = document.getElementById('result');
+
+      if (!itemName || !itemType || !itemPrice) {
+        resultArea.innerHTML = "Please fill all required fields.";
+        return;
+      }
+
+      let totalPrice = itemPrice;
+      if (hasWarranty) {
+        totalPrice += itemPrice * 0.1;
+      }
+
+      resultArea.innerHTML = `
+        <b>Item Name:</b> ${itemName}<br>
+        <b>Item Type:</b> ${itemType}<br>
+        <b>Total Price:</b> PHP ${totalPrice.toFixed(2)} (including warranty if selected)
+      `;
+    }
+  </script>
+
+</body>
+</html>
